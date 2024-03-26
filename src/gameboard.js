@@ -3,12 +3,16 @@ import Ship from "./ships";
 export default class Gameboard {
   constructor() {
     this.board = [];
+    this.hitsBoard = [];
   }
 
   generateBoard(r = 10, c = 10) {
     this.board = Array(r)
       .fill(0)
       .map(() => Array(c).fill(0));
+    this.hitsBoard = Array(r)
+      .fill(false)
+      .map(() => Array(c).fill(false));
   }
 
   placeShip(start, length, direction) {
@@ -41,5 +45,46 @@ export default class Gameboard {
         this.board[start[0]][start[1] + i] = newShip;
       }
     }
+  }
+
+  receiveAttack(coordinates) {
+    const cell = this.board[coordinates[0]][coordinates[1]];
+    const cellHit = this.hitsBoard[coordinates[0]][coordinates[1]];
+    console.log(this.hitsBoard);
+    if (cellHit === false) {
+      if (cell !== 0) {
+        cell.hit();
+        this.hitsBoard[coordinates[0]][coordinates[1]] = true;
+        cell.isSunk();
+        if (this.checkingWin() === true) console.log("End of the game");
+        return true;
+      }
+      this.hitsBoard[coordinates[0]][coordinates[1]] = true;
+      return false;
+    }
+
+    return "Already hit";
+  }
+
+  checkingWin() {
+    const ships = [];
+    const destroyedShips = [];
+    this.board.forEach((elememt) =>
+      elememt.forEach((elem) => {
+        if (elem !== 0) {
+          ships.push(elem);
+        }
+      }),
+    );
+    for (let i = 0; i < ships.length; i++) {
+      if (ships[i].sunk === true) {
+        destroyedShips.push(ships[i]);
+      }
+    }
+    if (ships.length === destroyedShips.length) {
+      return true;
+    }
+
+    return false;
   }
 }

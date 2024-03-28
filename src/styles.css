@@ -1,0 +1,112 @@
+@import "normalize.css";
+
+body {
+  min-height: 100vh;
+  background: linear-gradient(to left, #f8f6e3, #ace2e1);
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding-top: 5rem;
+  width: 100%;
+}
+
+.game-name {
+  font-size: 4rem;
+}
+
+.name {
+  background-color: #f8f6e3;
+  border: 1px solid #333;
+  width: 20rem;
+  text-align: center;
+  border-radius: 0.2rem;
+}
+
+.start-btn {
+  padding-top: 3rem;
+}
+
+.start {
+  text-decoration: none;
+  border: 1px solid #333;
+  font-size: 2rem;
+  cursor: pointer;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  cursor: pointer;
+  overflow: hidden;
+  outline: none;
+}
+
+.start:hover {
+  background-color: #c0faff;
+  padding-left: 3rem;
+  padding-right: 3rem;
+  transition: 0.6s;
+}
+
+.main {
+  margin-top: 3rem;
+  min-height: 50vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.rotate {
+  text-decoration: none;
+  font-size: 2rem;
+  cursor: pointer;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  cursor: pointer;
+  overflow: hidden;
+  outline: none;
+  width: 10rem;
+  text-align: center;
+}
+
+.rotate:hover {
+  background-color: #e0fcff;
+  transition: 0.6s;
+}
+
+.gameboards {
+  display: flex;
+  justify-content: space-between;
+  width: 65%;
+  height: 100%;
+  margin-top: 2rem;
+}
+
+.right-board,
+.left-board {
+  background-color: transparent;
+  background-repeat: no-repeat;
+  overflow: hidden;
+  outline: none;
+  width: 90%;
+  aspect-ratio: 1;
+  max-width: 600px;
+  max-height: 600px;
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  grid-template-rows: repeat(10, 1fr);
+  gap: 2px;
+}
+
+.cell {
+  border: 1px solid #333;
+  max-height: 50px;
+  max-width: 50px;
+  cursor: pointer;
+}

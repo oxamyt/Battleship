@@ -1,5 +1,8 @@
-export default function renderPage() {
+import gameLoop from "./game";
+
+export function renderPage(boards) {
   const container = document.querySelector(".container");
+  container.innerHTML = "";
 
   const header = document.createElement("div");
   header.classList.add("header");
@@ -49,14 +52,44 @@ export default function renderPage() {
   gameboards.appendChild(leftBoard);
   gameboards.appendChild(rightBoard);
 
-  renderBoard(leftBoard);
-  renderBoard(rightBoard);
+  renderBoard(boards[0], leftBoard);
+  renderBoard(boards[1], rightBoard);
+
+  leftBoard.querySelectorAll(".cell").forEach((cell) => {
+    cell.addEventListener("click", (e) => {
+      const x = e.target.getAttribute("data-x");
+      const y = e.target.getAttribute("data-y");
+      boards[0].receiveAttack([x, y]);
+      renderPage(boards);
+    });
+  });
+
+  rightBoard.querySelectorAll(".cell").forEach((cell) => {
+    cell.addEventListener("click", (e) => {
+      const x = e.target.getAttribute("data-x");
+      const y = e.target.getAttribute("data-y");
+      boards[1].receiveAttack([x, y]);
+      renderPage(boards);
+    });
+  });
 }
 
-function renderBoard(board) {
-  for (let i = 0; i < 100; i++) {
-    const cell = document.createElement("div");
-    cell.classList.add("cell");
-    board.appendChild(cell);
+export function renderBoard(gameboard, boardDOM) {
+  for (let x = 0; x < gameboard.board.length; x++) {
+    for (let y = 0; y < gameboard.board.length; y++) {
+      const cell = document.createElement("div");
+      cell.classList.add("cell");
+      if (gameboard.board[x][y] !== 0 && gameboard.isEnemy === false)
+        cell.classList.add("ship");
+      if (gameboard.hitsBoard[x][y] !== false && gameboard.board[x][y] !== 0) {
+        cell.classList.add("hit");
+      }
+      if (gameboard.hitsBoard[x][y] !== false && gameboard.board[x][y] === 0) {
+        cell.classList.add("miss");
+      }
+      cell.setAttribute("data-x", x);
+      cell.setAttribute("data-y", y);
+      boardDOM.appendChild(cell);
+    }
   }
 }

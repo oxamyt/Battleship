@@ -5,11 +5,6 @@ export default class Player {
     this.name = name;
   }
 
-  playerTurn(enemyBoard, coordinates) {
-    const turn = enemyBoard.receiveAttack(coordinates);
-    return turn;
-  }
-
   generateRandomCords() {
     const x = Math.round(Math.random() * 10);
     const y = Math.round(Math.random() * 10);

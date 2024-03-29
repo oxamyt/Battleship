@@ -110,3 +110,15 @@ body {
   max-width: 50px;
   cursor: pointer;
 }
+
+.ship {
+  background-color: rgb(59, 186, 236);
+}
+
+.hit {
+  background-color: red;
+}
+
+.miss {
+  background-color: grey;
+}

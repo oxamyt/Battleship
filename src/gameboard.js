@@ -1,9 +1,10 @@
 import Ship from "./ships";
 
 export default class Gameboard {
-  constructor() {
+  constructor(isEnemy) {
     this.board = [];
     this.hitsBoard = [];
+    this.isEnemy = isEnemy;
   }
 
   generateBoard(r = 10, c = 10) {

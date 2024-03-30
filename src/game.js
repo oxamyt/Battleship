@@ -2,10 +2,10 @@ import Gameboard from "./gameboard";
 import Player from "./players";
 import { renderPage } from "./render";
 
-export default function gameLoop() {
+export function gameLoop() {
   const playerOne = new Player("Daniel");
-  const plyaerTwo = new Player("AI");
-  const players = [playerOne, plyaerTwo];
+  const playerTwo = new Player("AI");
+  const players = [playerOne, playerTwo];
   const boardOne = new Gameboard(false);
   const boardTwo = new Gameboard(true);
   const boards = [boardOne, boardTwo];
@@ -21,5 +21,16 @@ export default function gameLoop() {
   boardTwo.placeShip([9, 3], 3, "vertical");
   boardTwo.placeShip([2, 7], 2, "horizontal");
 
-  renderPage(boards);
+  renderPage(boards, players);
+}
+
+export function addEventListeners(gameboard, boardDOM, boards) {
+  boardDOM.querySelectorAll(".cell").forEach((cell) => {
+    cell.addEventListener("click", (e) => {
+      const x = e.target.getAttribute("data-x");
+      const y = e.target.getAttribute("data-y");
+      gameboard.receiveAttack([x, y]);
+      renderPage(boards, [x, y]);
+    });
+  });
 }

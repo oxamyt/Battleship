@@ -1,25 +1,25 @@
-import gameLoop from "./game";
+import { addEventListeners, gameLoop } from "./game";
 
-export function renderPage(boards) {
+export function renderPage(boards, players) {
   const container = document.querySelector(".container");
   container.innerHTML = "";
 
-  const header = document.createElement("div");
-  header.classList.add("header");
+  // const header = document.createElement("div");
+  // header.classList.add("header");
 
-  const name = document.createElement("div");
-  name.classList.add("name");
+  // const name = document.createElement("div");
+  // name.classList.add("name");
 
-  const gameName = document.createElement("p");
-  gameName.classList.add("game-name");
-  gameName.textContent = "Battleship";
+  // const gameName = document.createElement("p");
+  // gameName.classList.add("game-name");
+  // gameName.textContent = "Battleship";
 
-  const startBtn = document.createElement("div");
-  startBtn.classList.add("start-btn");
+  // const startBtn = document.createElement("div");
+  // startBtn.classList.add("start-btn");
 
-  const start = document.createElement("button");
-  start.classList.add("start");
-  start.textContent = "Start Game";
+  // const start = document.createElement("button");
+  // start.classList.add("start");
+  // start.textContent = "Start Game";
 
   const main = document.createElement("div");
   main.classList.add("main");
@@ -40,12 +40,12 @@ export function renderPage(boards) {
   const rightBoard = document.createElement("div");
   rightBoard.classList.add("right-board");
 
-  container.appendChild(header);
+  // container.appendChild(header);
   container.appendChild(main);
-  header.appendChild(name);
-  name.appendChild(gameName);
-  header.appendChild(startBtn);
-  startBtn.appendChild(start);
+  // header.appendChild(name);
+  // name.appendChild(gameName);
+  // header.appendChild(startBtn);
+  // startBtn.appendChild(start);
   main.appendChild(rotateBtn);
   rotateBtn.appendChild(rotate);
   main.appendChild(gameboards);
@@ -55,23 +55,29 @@ export function renderPage(boards) {
   renderBoard(boards[0], leftBoard);
   renderBoard(boards[1], rightBoard);
 
-  leftBoard.querySelectorAll(".cell").forEach((cell) => {
-    cell.addEventListener("click", (e) => {
-      const x = e.target.getAttribute("data-x");
-      const y = e.target.getAttribute("data-y");
-      boards[0].receiveAttack([x, y]);
-      renderPage(boards);
+  if (!container.hasAttribute("event-listener")) {
+    container.addEventListener("click", (e) => {
+      if (
+        e.target.classList.contains("cell") &&
+        !e.target.classList.contains("miss") &&
+        !e.target.classList.contains("hit")
+      ) {
+        const cell = e.target;
+        const x = e.target.getAttribute("data-x");
+        const y = e.target.getAttribute("data-y");
+        if (cell.closest(".right-board")) {
+          const board = boards[1];
+          board.receiveAttack([x, y]);
+          container.setAttribute("event-listener", true);
+          renderPage(boards);
+          setTimeout(() => {
+            players[0].aiTurn(boards[0]);
+            renderPage(boards);
+          }, 100);
+        }
+      }
     });
-  });
-
-  rightBoard.querySelectorAll(".cell").forEach((cell) => {
-    cell.addEventListener("click", (e) => {
-      const x = e.target.getAttribute("data-x");
-      const y = e.target.getAttribute("data-y");
-      boards[1].receiveAttack([x, y]);
-      renderPage(boards);
-    });
-  });
+  }
 }
 
 export function renderBoard(gameboard, boardDOM) {

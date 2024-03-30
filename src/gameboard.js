@@ -49,13 +49,6 @@ export default class Gameboard {
   }
 
   receiveAttack(coordinates) {
-    if (
-      coordinates[0] > this.board.length ||
-      coordinates[1] > this.board.length
-    ) {
-      console.log("wrong coordinate");
-      return false;
-    }
     const cell = this.board[coordinates[0]][coordinates[1]];
     const cellHit = this.hitsBoard[coordinates[0]][coordinates[1]];
     if (cellHit === false) {

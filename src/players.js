@@ -1,4 +1,5 @@
 import Gameboard from "./gameboard";
+import { renderPage } from "./render";
 
 export default class Player {
   constructor(name) {
@@ -6,24 +7,17 @@ export default class Player {
   }
 
   generateRandomCords() {
-    const x = Math.round(Math.random() * 10);
-    const y = Math.round(Math.random() * 10);
+    const x = Math.round(Math.random() * 9);
+    const y = Math.round(Math.random() * 9);
     return [x, y];
   }
 
   aiTurn(enemyBoard) {
-    let cords = this.generateRandomCords();
-    if (enemyBoard.hitsBoard[cords[0]][cords[1]] === false) {
-      const turn = enemyBoard.receiveAttack([cords[0], cords[1]]);
-      return turn;
-    }
-
-    while (enemyBoard.hitsBoard[cords[0]][cords[1]] === true) {
+    let cords;
+    do {
       cords = this.generateRandomCords();
-      if (enemyBoard.hitsBoard[cords[0]][cords[1]] === false) {
-        const turn = enemyBoard.receiveAttack([cords[0], cords[1]]);
-        return turn;
-      }
-    }
+    } while (enemyBoard.hitsBoard[cords[0]][cords[1]] === true);
+    const turn = enemyBoard.receiveAttack([cords[0], cords[1]]);
+    return turn;
   }
 }

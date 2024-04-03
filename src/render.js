@@ -1,35 +1,18 @@
-import { addEventListeners, gameLoop } from "./game";
+import { checkForStartingGame, gameLoop } from "./game";
 
 export function renderPage(boards, players) {
   const container = document.querySelector(".container");
   container.innerHTML = "";
 
-  // const header = document.createElement("div");
-  // header.classList.add("header");
-
-  // const name = document.createElement("div");
-  // name.classList.add("name");
-
-  // const gameName = document.createElement("p");
-  // gameName.classList.add("game-name");
-  // gameName.textContent = "Battleship";
-
-  // const startBtn = document.createElement("div");
-  // startBtn.classList.add("start-btn");
-
-  // const start = document.createElement("button");
-  // start.classList.add("start");
-  // start.textContent = "Start Game";
-
   const main = document.createElement("div");
   main.classList.add("main");
 
-  const rotateBtn = document.createElement("div");
-  rotateBtn.classList.add("rotate-btn");
+  const rotateDiv = document.createElement("div");
+  rotateDiv.classList.add("rotate-div");
 
-  const rotate = document.createElement("button");
-  rotate.classList.add("rotate");
-  rotate.textContent = "Rotate Ship";
+  const rotateBtn = document.createElement("button");
+  rotateBtn.classList.add("rotate-btn");
+  rotateBtn.textContent = "Rotate Ship";
 
   const gameboards = document.createElement("div");
   gameboards.classList.add("gameboards");
@@ -40,62 +23,135 @@ export function renderPage(boards, players) {
   const rightBoard = document.createElement("div");
   rightBoard.classList.add("right-board");
 
-  // container.appendChild(header);
+  const footer = document.createElement("div");
+  footer.classList.add("footer");
+
+  const restartBtn = document.createElement("button");
+  restartBtn.classList.add("restart-btn");
+  restartBtn.textContent = "Restart game";
+
   container.appendChild(main);
-  // header.appendChild(name);
-  // name.appendChild(gameName);
-  // header.appendChild(startBtn);
-  // startBtn.appendChild(start);
-  main.appendChild(rotateBtn);
-  rotateBtn.appendChild(rotate);
+  container.appendChild(footer);
+  footer.appendChild(restartBtn);
+  main.appendChild(rotateDiv);
+  rotateDiv.appendChild(rotateBtn);
   main.appendChild(gameboards);
   gameboards.appendChild(leftBoard);
   gameboards.appendChild(rightBoard);
 
-  renderBoard(boards[0], leftBoard);
-  renderBoard(boards[1], rightBoard);
+  attachRotateEvent(rotateBtn, boards, [leftBoard, rightBoard], players);
+  attachRestartEvent(restartBtn);
 
-  if (!container.hasAttribute("event-listener")) {
-    container.addEventListener("click", (e) => {
-      if (
-        e.target.classList.contains("cell") &&
-        !e.target.classList.contains("miss") &&
-        !e.target.classList.contains("hit")
-      ) {
-        const cell = e.target;
-        const x = e.target.getAttribute("data-x");
-        const y = e.target.getAttribute("data-y");
-        if (cell.closest(".right-board")) {
-          const board = boards[1];
-          board.receiveAttack([x, y]);
-          container.setAttribute("event-listener", true);
-          renderPage(boards);
-          setTimeout(() => {
-            players[0].aiTurn(boards[0]);
-            renderPage(boards);
-          }, 100);
+  renderBoards(boards, [leftBoard, rightBoard], players);
+}
+
+export function renderBoards(boards, webBoards, players) {
+  for (let i = 0; i < boards.length; i++) {
+    webBoards[i].innerHTML = "";
+    const isVertical = webBoards[i]
+      .closest(".main")
+      .querySelector(".rotate-btn")
+      .hasAttribute("vertical");
+    for (let x = 0; x < boards[i].board.length; x++) {
+      for (let y = 0; y < boards[i].board.length; y++) {
+        const cell = document.createElement("div");
+        cell.classList.add("cell");
+
+        if (boards[i].board[x][y] !== 0 && boards[i].isEnemy === false)
+          cell.classList.add("ship");
+        if (
+          boards[i].hitsBoard[x][y] !== false &&
+          boards[i].board[x][y] !== 0
+        ) {
+          cell.classList.add("hit");
         }
+        if (
+          boards[i].hitsBoard[x][y] !== false &&
+          boards[i].board[x][y] === 0
+        ) {
+          cell.classList.add("miss");
+        }
+
+        cell.setAttribute("data-x", x);
+        cell.setAttribute("data-y", y);
+
+        if (boards[i].shipsLength !== 0) {
+          if (webBoards[i].classList.contains("left-board")) {
+            attachCellsHighlight(boards, webBoards, cell, isVertical);
+
+            cell.addEventListener("click", (e) => {
+              const clickedX = parseInt(e.target.getAttribute("data-x"));
+              const clickedY = parseInt(e.target.getAttribute("data-y"));
+              const direction = isVertical ? "vertical" : "horizontal";
+
+              if (!cell.classList.contains("ship")) {
+                boards[i].placeShip(
+                  [clickedX, clickedY],
+                  boards[i].shipsLength,
+                  direction,
+                );
+
+                removeHighlight(webBoards[i]);
+                checkForStartingGame(boards, webBoards, players);
+                renderBoards(boards, webBoards, players);
+              }
+            });
+          }
+        }
+        webBoards[i].appendChild(cell);
       }
-    });
+    }
   }
 }
 
-export function renderBoard(gameboard, boardDOM) {
-  for (let x = 0; x < gameboard.board.length; x++) {
-    for (let y = 0; y < gameboard.board.length; y++) {
-      const cell = document.createElement("div");
-      cell.classList.add("cell");
-      if (gameboard.board[x][y] !== 0 && gameboard.isEnemy === false)
-        cell.classList.add("ship");
-      if (gameboard.hitsBoard[x][y] !== false && gameboard.board[x][y] !== 0) {
-        cell.classList.add("hit");
-      }
-      if (gameboard.hitsBoard[x][y] !== false && gameboard.board[x][y] === 0) {
-        cell.classList.add("miss");
-      }
-      cell.setAttribute("data-x", x);
-      cell.setAttribute("data-y", y);
-      boardDOM.appendChild(cell);
+function highlightCells(boardDOM, hoverX, hoverY, direction, shipLength) {
+  for (let i = 0; i < shipLength; i++) {
+    const x = direction === "vertical" ? hoverX + i : hoverX;
+    const y = direction === "vertical" ? hoverY : hoverY + i;
+    const cell = boardDOM.querySelector(`.cell[data-x="${x}"][data-y="${y}"]`);
+    if (cell === null) return;
+    if (!cell.classList.contains("ship")) {
+      cell.classList.add("highlight");
+    } else if (cell.classList.contains("ship") === null) {
+      return;
     }
   }
+}
+
+function removeHighlight(boardDOM) {
+  boardDOM.querySelectorAll(".highlight").forEach((cell) => {
+    cell.classList.remove("highlight");
+  });
+}
+
+function attachRotateEvent(rotateBtn, boards, webBoards, players) {
+  rotateBtn.addEventListener("click", () => {
+    rotateBtn.toggleAttribute("vertical");
+    renderBoards(boards, [webBoards[0], webBoards[1]], players);
+  });
+}
+
+function attachCellsHighlight(boards, webBoards, cell, isVertical) {
+  cell.addEventListener("mouseenter", (e) => {
+    const hoverX = parseInt(e.target.getAttribute("data-x"));
+    const hoverY = parseInt(e.target.getAttribute("data-y"));
+    const direction = isVertical ? "horizontal" : "vertical";
+    highlightCells(
+      webBoards[0],
+      hoverX,
+      hoverY,
+      direction,
+      boards[0].shipsLength,
+    );
+  });
+
+  cell.addEventListener("mouseleave", () => {
+    removeHighlight(webBoards[0]);
+  });
+}
+
+function attachRestartEvent(restartBtn) {
+  restartBtn.addEventListener("click", () => {
+    gameLoop();
+  });
 }

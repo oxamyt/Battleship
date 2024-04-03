@@ -1,3 +1,4 @@
+import { gameLoop } from "./game";
 import Ship from "./ships";
 
 export default class Gameboard {
@@ -5,6 +6,8 @@ export default class Gameboard {
     this.board = [];
     this.hitsBoard = [];
     this.isEnemy = isEnemy;
+    this.shipsLength = 5;
+    this.start = false;
   }
 
   generateBoard(r = 10, c = 10) {
@@ -19,33 +22,34 @@ export default class Gameboard {
   placeShip(start, length, direction) {
     const newShip = new Ship(length);
 
-    if (start[0] > this.board.length || start[1] > this.board.length) {
-      return "limit";
-    }
-
     if (direction === "horizontal") {
       if (start[0] + length > this.board.length) {
-        return "limit";
+        return false;
       }
       for (let i = 0; i < length; i++) {
-        if (this.board[start[0] + i][start[1]] !== 0) return "It`s occupied";
+        if (this.board[start[0] + i][start[1]] !== 0) return false;
       }
       for (let i = 0; i < length; i++) {
         this.board[start[0] + i][start[1]] = newShip;
       }
+      this.shipsLength--;
+      return true;
     }
 
     if (direction === "vertical") {
       if (start[1] + length > this.board.length) {
-        return "limit";
+        return false;
       }
       for (let i = 0; i < length; i++) {
-        if (this.board[start[0]][start[1] + i] !== 0) return "It`s occupied";
+        if (this.board[start[0]][start[1] + i] !== 0) return false;
       }
       for (let i = 0; i < length; i++) {
         this.board[start[0]][start[1] + i] = newShip;
       }
+      this.shipsLength--;
+      return true;
     }
+    return false;
   }
 
   receiveAttack(coordinates) {
@@ -58,12 +62,15 @@ export default class Gameboard {
         cell.isSunk();
         if (this.checkingWin() === true) {
           console.log("End of the game");
+
+          return true;
         }
         return true;
       }
       this.hitsBoard[coordinates[0]][coordinates[1]] = true;
       return false;
     }
+    return false;
   }
 
   checkingWin() {

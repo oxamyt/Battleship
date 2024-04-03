@@ -1,6 +1,6 @@
 import Gameboard from "./gameboard";
 import Player from "./players";
-import { renderPage } from "./render";
+import { renderBoards, renderPage } from "./render";
 
 export function gameLoop() {
   const playerOne = new Player("Daniel");
@@ -11,26 +11,49 @@ export function gameLoop() {
   const boards = [boardOne, boardTwo];
   boardOne.generateBoard();
   boardTwo.generateBoard();
-  boardOne.placeShip([0, 0], 5, "vertical");
-  boardOne.placeShip([6, 0], 4, "horizontal");
-  boardOne.placeShip([3, 3], 3, "vertical");
-  boardOne.placeShip([6, 7], 2, "horizontal");
-
-  boardTwo.placeShip([0, 0], 5, "vertical");
-  boardTwo.placeShip([2, 3], 4, "horizontal");
-  boardTwo.placeShip([9, 3], 3, "vertical");
-  boardTwo.placeShip([2, 7], 2, "horizontal");
-
   renderPage(boards, players);
 }
 
-export function addEventListeners(gameboard, boardDOM, boards) {
-  boardDOM.querySelectorAll(".cell").forEach((cell) => {
-    cell.addEventListener("click", (e) => {
-      const x = e.target.getAttribute("data-x");
-      const y = e.target.getAttribute("data-y");
-      gameboard.receiveAttack([x, y]);
-      renderPage(boards, [x, y]);
+function startGame(boards, webBoards, players) {
+  if (boards[1].start === false) {
+    let i = 5;
+    while (boards[1].shipsLength !== 0) {
+      const x = Math.round(Math.random() * 9);
+      const y = Math.round(Math.random() * 9);
+      const direction =
+        Math.round(Math.random()) === 1 ? "horizontal" : "vertical";
+      if (boards[1].placeShip([x, y], i, direction) === true) {
+        i--;
+      }
+    }
+    boards[1].start = true;
+  }
+  const container = document.querySelector(".container");
+  if (!container.hasAttribute("event-listener")) {
+    container.addEventListener("click", (e) => {
+      if (
+        e.target.classList.contains("cell") &&
+        !e.target.classList.contains("miss") &&
+        !e.target.classList.contains("hit")
+      ) {
+        const cell = e.target;
+        const x = e.target.getAttribute("data-x");
+        const y = e.target.getAttribute("data-y");
+        if (cell.closest(".right-board")) {
+          const board = boards[1];
+          board.receiveAttack([x, y]);
+          setTimeout(() => {
+            players[1].aiTurn(boards[0]);
+            renderBoards(boards, webBoards, players);
+          }, 100);
+        }
+      }
     });
-  });
+  }
+}
+
+export function checkForStartingGame(boards, webBoards, players) {
+  if (boards[0].shipsLength === 0) {
+    startGame(boards, webBoards, players);
+  }
 }

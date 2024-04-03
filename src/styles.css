@@ -62,7 +62,7 @@ body {
   align-items: center;
 }
 
-.rotate {
+.rotate-btn {
   text-decoration: none;
   font-size: 2rem;
   cursor: pointer;
@@ -71,11 +71,12 @@ body {
   cursor: pointer;
   overflow: hidden;
   outline: none;
-  width: 10rem;
+  width: 13rem;
   text-align: center;
+  border-radius: 9px;
 }
 
-.rotate:hover {
+.rotate-btn:hover {
   background-color: #e0fcff;
   transition: 0.6s;
 }
@@ -101,7 +102,7 @@ body {
   display: grid;
   grid-template-columns: repeat(10, 1fr);
   grid-template-rows: repeat(10, 1fr);
-  gap: 2px;
+  gap: 1px;
 }
 
 .cell {
@@ -121,4 +122,35 @@ body {
 
 .miss {
   background-color: grey;
+}
+
+.highlight {
+  background-color: rgb(144, 207, 231);
+}
+
+.footer {
+  margin-top: 6rem;
+  min-height: 50vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.restart-btn {
+  text-decoration: none;
+  font-size: 2rem;
+  cursor: pointer;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  cursor: pointer;
+  overflow: hidden;
+  outline: none;
+  width: 15rem;
+  text-align: center;
+  border-radius: 9px;
+}
+
+.restart-btn:hover {
+  background-color: #ffbe0b;
+  transition: 0.6s;
 }

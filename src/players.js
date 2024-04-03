@@ -1,6 +1,3 @@
-import Gameboard from "./gameboard";
-import { renderPage } from "./render";
-
 export default class Player {
   constructor(name) {
     this.name = name;

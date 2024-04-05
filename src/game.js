@@ -53,8 +53,11 @@ function startGame(boards, webBoards, players) {
           removeContainerEvents();
         } else {
           setTimeout(() => {
-            players[1].aiTurn(boards[0]);
+            const aiAttackWon = players[1].aiTurn(boards[0]);
             renderBoards(boards, webBoards, players);
+            if (aiAttackWon === true) {
+              removeContainerEvents();
+            }
           }, 100);
         }
       }

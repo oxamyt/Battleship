@@ -1,4 +1,4 @@
-import { gameLoop } from "./game";
+import { showWinner } from "./render";
 import Ship from "./ships";
 
 export default class Gameboard {
@@ -10,6 +10,7 @@ export default class Gameboard {
     this.start = false;
   }
 
+  // Generating 10x10 gameboard
   generateBoard(r = 10, c = 10) {
     this.board = Array(r)
       .fill(0)
@@ -19,6 +20,7 @@ export default class Gameboard {
       .map(() => Array(c).fill(false));
   }
 
+  // Placing ship in gameboard
   placeShip(start, length, direction) {
     const newShip = new Ship(length);
 
@@ -52,6 +54,7 @@ export default class Gameboard {
     return false;
   }
 
+  // Checking if received attack hit ship
   receiveAttack(coordinates) {
     const cell = this.board[coordinates[0]][coordinates[1]];
     const cellHit = this.hitsBoard[coordinates[0]][coordinates[1]];
@@ -61,18 +64,17 @@ export default class Gameboard {
         this.hitsBoard[coordinates[0]][coordinates[1]] = true;
         cell.isSunk();
         if (this.checkingWin() === true) {
-          console.log("End of the game");
-
+          const winner = this.isEnemy === true ? "Player" : "Computer";
+          showWinner(winner);
           return true;
         }
-        return true;
       }
       this.hitsBoard[coordinates[0]][coordinates[1]] = true;
-      return false;
     }
     return false;
   }
 
+  // Checking conditions for win
   checkingWin() {
     const ships = [];
     const destroyedShips = [];

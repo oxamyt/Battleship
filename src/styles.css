@@ -1,13 +1,26 @@
 @import "normalize.css";
+@font-face {
+  font-family: "Roboto";
+  src: url(fonts/Roboto-Bold.ttf);
+  src: url(fonts/Roboto-Regular.ttf);
+}
+
+:root {
+  --main-border-color: #495057;
+  --main-text-color: #333333;
+}
 
 body {
   min-height: 100vh;
   background: linear-gradient(to left, #f8f6e3, #ace2e1);
+  font-family: "Roboto";
+  color: var(--main-text-color);
 }
 
 .container {
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
 }
 
 .header {
@@ -24,8 +37,8 @@ body {
 }
 
 .name {
-  background-color: #f8f6e3;
-  border: 1px solid #333;
+  border: 1px solid var(--main-border-color);
+  background-color: #a2d2ff;
   width: 20rem;
   text-align: center;
   border-radius: 0.2rem;
@@ -37,7 +50,8 @@ body {
 
 .start {
   text-decoration: none;
-  border: 1px solid #333;
+  border: 1px solid var(--main-border-color);
+  border-radius: 10px;
   font-size: 2rem;
   cursor: pointer;
   background-color: transparent;
@@ -64,16 +78,18 @@ body {
 
 .rotate-btn {
   text-decoration: none;
-  font-size: 2rem;
+  font-size: 3.5rem;
   cursor: pointer;
   background-color: transparent;
   background-repeat: no-repeat;
-  cursor: pointer;
   overflow: hidden;
   outline: none;
-  width: 13rem;
+  width: 25rem;
+  height: 5rem;
   text-align: center;
   border-radius: 9px;
+  margin: 0;
+  padding: 0;
 }
 
 .rotate-btn:hover {
@@ -102,38 +118,51 @@ body {
   display: grid;
   grid-template-columns: repeat(10, 1fr);
   grid-template-rows: repeat(10, 1fr);
-  gap: 1px;
+  gap: 0;
+  margin: 1rem;
+  margin-top: 2rem;
 }
 
 .cell {
-  border: 1px solid #333;
-  max-height: 50px;
-  max-width: 50px;
+  border: 1px solid var(--main-border-color);
+  max-height: 100%;
+  max-width: 100%;
   cursor: pointer;
+  margin: 0;
+  padding: 0;
+}
+
+.right-board .cell {
+  cursor: crosshair;
+}
+
+.right-board .cell:not(.miss):not(.hit):hover {
+  background-color: #e0fcff;
 }
 
 .ship {
-  background-color: rgb(59, 186, 236);
+  background-color: #a2d2ff;
 }
 
 .hit {
-  background-color: red;
+  background-color: #ff4d6d;
 }
 
 .miss {
-  background-color: grey;
+  background-color: #d5bdaf;
 }
 
 .highlight {
   background-color: rgb(144, 207, 231);
+  border: none;
 }
 
 .footer {
-  margin-top: 6rem;
-  min-height: 50vh;
   display: flex;
   flex-direction: column;
   align-items: center;
+  min-height: 100%;
+  margin-top: auto;
 }
 
 .restart-btn {
@@ -148,9 +177,45 @@ body {
   width: 15rem;
   text-align: center;
   border-radius: 9px;
+  border-color: var(--main-border-color);
+  margin-bottom: 2rem;
 }
 
 .restart-btn:hover {
-  background-color: #ffbe0b;
+  background-color: #edede9;
   transition: 0.6s;
+}
+
+.start-shooting {
+  font-size: 3.5rem;
+  width: 25rem;
+  height: 5rem;
+  text-align: center;
+  letter-spacing: 0.1rem;
+  margin: 0;
+  padding: 0;
+}
+
+.copyright-div {
+  margin-top: 3rem;
+  display: flex;
+  height: 5rem;
+  width: 100%;
+  background-color: #edede9;
+  opacity: 0.8;
+  justify-content: center;
+  align-items: center;
+}
+
+a {
+  text-decoration: none;
+  color: var(--main-text-color);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.svg-logo {
+  width: 2rem;
+  text-align: center;
 }

@@ -1,5 +1,6 @@
 import { checkForStartingGame, gameLoop } from "./game";
 
+// Rendering page with boards
 export function renderPage(boards, players) {
   const container = document.querySelector(".container");
   container.innerHTML = "";
@@ -30,9 +31,18 @@ export function renderPage(boards, players) {
   restartBtn.classList.add("restart-btn");
   restartBtn.textContent = "Restart game";
 
+  const copyrightDiv = document.createElement("div");
+  copyrightDiv.classList.add("copyright-div");
+
+  const copyrightText = document.createElement("h2");
+
+  copyrightText.innerHTML = `<a href ="https://github.com/oxamyt">2024 Oxamyt  <img class="svg-logo" src="../src/assets/github-logo.svg" alt="github-logo"> </a>`;
+
   container.appendChild(main);
   container.appendChild(footer);
   footer.appendChild(restartBtn);
+  footer.appendChild(copyrightDiv);
+  copyrightDiv.appendChild(copyrightText);
   main.appendChild(rotateDiv);
   rotateDiv.appendChild(rotateBtn);
   main.appendChild(gameboards);
@@ -45,13 +55,15 @@ export function renderPage(boards, players) {
   renderBoards(boards, [leftBoard, rightBoard], players);
 }
 
+// Rendering boards based on gameboards
 export function renderBoards(boards, webBoards, players) {
   for (let i = 0; i < boards.length; i++) {
+    let isVertical = webBoards[i].closest(".main").querySelector(".rotate-btn");
+    if (isVertical !== null) {
+      isVertical = isVertical.hasAttribute("vertical");
+    }
+
     webBoards[i].innerHTML = "";
-    const isVertical = webBoards[i]
-      .closest(".main")
-      .querySelector(".rotate-btn")
-      .hasAttribute("vertical");
     for (let x = 0; x < boards[i].board.length; x++) {
       for (let y = 0; y < boards[i].board.length; y++) {
         const cell = document.createElement("div");
@@ -104,6 +116,7 @@ export function renderBoards(boards, webBoards, players) {
   }
 }
 
+// Highlighting cells when player is placing ships
 function highlightCells(boardDOM, hoverX, hoverY, direction, shipLength) {
   for (let i = 0; i < shipLength; i++) {
     const x = direction === "vertical" ? hoverX + i : hoverX;
@@ -118,12 +131,14 @@ function highlightCells(boardDOM, hoverX, hoverY, direction, shipLength) {
   }
 }
 
+// Remove highlighting cells
 function removeHighlight(boardDOM) {
   boardDOM.querySelectorAll(".highlight").forEach((cell) => {
     cell.classList.remove("highlight");
   });
 }
 
+// Attaching rotate event to rotate btn to allow player change direction when placing ships
 function attachRotateEvent(rotateBtn, boards, webBoards, players) {
   rotateBtn.addEventListener("click", () => {
     rotateBtn.toggleAttribute("vertical");
@@ -131,6 +146,7 @@ function attachRotateEvent(rotateBtn, boards, webBoards, players) {
   });
 }
 
+// Calculating cells which are highlighted
 function attachCellsHighlight(boards, webBoards, cell, isVertical) {
   cell.addEventListener("mouseenter", (e) => {
     const hoverX = parseInt(e.target.getAttribute("data-x"));
@@ -150,8 +166,33 @@ function attachCellsHighlight(boards, webBoards, cell, isVertical) {
   });
 }
 
+// Attaching restart game event to restart btn
 function attachRestartEvent(restartBtn) {
   restartBtn.addEventListener("click", () => {
     gameLoop();
   });
+}
+
+// Changing rotate btn to indicate to the player that he can start shooting
+export function changeRotateBtn() {
+  const rotateDiv = document.querySelector(".rotate-div");
+  const rotateBtn = document.querySelector(".rotate-btn");
+  rotateDiv.removeChild(rotateBtn);
+  const startShooting = document.createElement("h1");
+  startShooting.textContent = "Start Shooting";
+  startShooting.classList.add("start-shooting");
+  rotateDiv.appendChild(startShooting);
+}
+
+// Rendering winner on page
+export function showWinner(winner) {
+  const startShooting = document.querySelector(".start-shooting");
+  startShooting.textContent = `${winner} won`;
+}
+
+// Disabling all events after someone won
+export function removeContainerEvents() {
+  const container = document.querySelector(".container");
+  container.replaceWith(container.cloneNode(true));
+  attachRestartEvent(document.querySelector(".restart-btn"));
 }

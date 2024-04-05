@@ -5,10 +5,12 @@ export default class Ship {
     this.sunk = false;
   }
 
+  // Adding hit to the ship
   hit() {
     this.hits++;
   }
 
+  // Checking if ship has sunk
   isSunk() {
     if (this.hits === this.length) {
       this.sunk = true;

@@ -1,4 +1,5 @@
 import { checkForStartingGame, gameLoop } from "./game";
+import githubLogo from "./assets/github-logo.svg";
 
 // Rendering page with boards
 export function renderPage(boards, players) {
@@ -36,7 +37,7 @@ export function renderPage(boards, players) {
 
   const copyrightText = document.createElement("h2");
 
-  copyrightText.innerHTML = `<a href ="https://github.com/oxamyt">2024 Oxamyt  <img class="svg-logo" src="../src/assets/github-logo.svg" alt="github-logo"> </a>`;
+  copyrightText.innerHTML = `<a href ="https://github.com/oxamyt">2024 Oxamyt  <img class="svg-logo" src="${githubLogo}" alt="github-logo"> </a>`;
 
   container.appendChild(main);
   container.appendChild(footer);

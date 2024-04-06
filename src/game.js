@@ -40,7 +40,8 @@ function startGame(boards, webBoards, players) {
     if (
       e.target.classList.contains("cell") &&
       !e.target.classList.contains("miss") &&
-      !e.target.classList.contains("hit")
+      !e.target.classList.contains("hit") &&
+      !e.target.classList.contains("destroyed")
     ) {
       const cell = e.target;
       const x = e.target.getAttribute("data-x");

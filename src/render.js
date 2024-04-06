@@ -76,7 +76,12 @@ export function renderBoards(boards, webBoards, players) {
           boards[i].hitsBoard[x][y] !== false &&
           boards[i].board[x][y] !== 0
         ) {
-          cell.classList.add("hit");
+          const ship = boards[i].board[x][y];
+          if (ship.sunk === true) {
+            cell.classList.add("destroyed");
+          } else {
+            cell.classList.add("hit");
+          }
         }
         if (
           boards[i].hitsBoard[x][y] !== false &&

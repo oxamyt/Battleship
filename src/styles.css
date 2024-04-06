@@ -136,7 +136,7 @@ body {
   cursor: crosshair;
 }
 
-.right-board .cell:not(.miss):not(.hit):hover {
+.right-board .cell:not(.miss):not(.hit):not(.destroyed):hover {
   background-color: #e0fcff;
 }
 
@@ -150,6 +150,10 @@ body {
 
 .miss {
   background-color: #d5bdaf;
+}
+
+.destroyed {
+  background-color: #343a40;
 }
 
 .highlight {
